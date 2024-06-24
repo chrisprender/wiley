@@ -14,7 +14,7 @@
         .options {
             display: block;
             justify-content: space-between;
-            margin-bottom: 200px;
+            margin-bottom: 20px;
         }
         .options a {
             text-decoration: none;
@@ -23,7 +23,6 @@
         }
         .options a:hover {
             text-decoration: underline;
-			color: red;
         }
         #customPrompt {
             display: none;
@@ -40,14 +39,6 @@
             display: flex;
             flex-direction: column;
         }
-        .user-bubble-container {
-            width: 100%;
-            margin-bottom: 20px;
-        }
-        .bot-bubbles-container {
-            display: flex;
-            justify-content: space-between;
-        }
         .chat-bubble {
             background-color: #f1f1f1;
             border-radius: 10px;
@@ -59,9 +50,6 @@
             background-color: #007bff;
             color: white;
         }
-        .bot-bubble {
-            width: 45%;
-        }
         #resetButton {
             display: none;
             margin: 20px auto;
@@ -70,52 +58,40 @@
     </style>
 </head>
 <body>
-    <h1>Generative AI: The Good and the Bad</h1>
-    <p>Respondents had mixed feelings about AI. Proponents were excited about the chance to gain efficiencies and have an assistant to help create new content. But detractors raised concerns about false statements—so-called "AI hallucinations"—and inconsistent tone.</p><p>Explore how prompt engineering can make or break the results of AI exploration. Please choose a prompt below:</p>
+    <h1>What is an LLM?</h1>
+    <p>An LLM, or Large Language Model, is a type of computer program designed to understand and generate human language. It is trained on vast amounts of text data, allowing it to predict and generate words, sentences, and even whole paragraphs that make sense. This technology is used in various applications like chatbots, language translation, and content creation. Essentially, an LLM helps computers understand and use language in a way that mimics human communication.</p>
+	<h2>Try it out for yourself</h2>
     
     <ul class="options">
-        <li><a onclick="selectOption('Explain the significance of the scientific method')">Explain the significance of the scientific method</a></li>
-        <li><a onclick="selectOption('Define quantum computing in simple terms')">Define quantum computing in simple terms</a></li>
-        <li><a onclick="selectOption('Explain the role of the federal reserve in the US economy')">Explain the role of the federal reserve in the US economy</a></li>
-        <li><a onclick="showCustomPrompt()">Write your own prompt</a></li>
-    </div>
-    <div>&nbsp;</div>
+        <li><a onclick="selectOption('What\'s the significance of the scientific method?')">What's the significance of the scientific method?</a></li>
+        <li><a onclick="selectOption('Why did the Roman empire fall?')">Why did the Roman empire fall?</a></li>
+        <li><a onclick="selectOption('Explain the role of the federal reserve in the US economy.')">Explain the role of the federal reserve in the US economy.</a></li>
+        <li><a onclick="showCustomPrompt()">Write Your Own</a></li>
+    </ul>
+    
     <div id="customPrompt">
         <input type="text" id="customInput" placeholder="Enter your prompt">
         <button onclick="submitCustomPrompt()">Submit</button>
     </div>
     
     <div class="chat-container">
-        <div class="user-bubble-container">
-            <div id="userBubble" class="chat-bubble user-bubble"></div>
-        </div>
-        <div class="bot-bubbles-container">
-            <div id="bot1Bubble" class="chat-bubble bot-bubble"></div>
-            <div id="bot2Bubble" class="chat-bubble bot-bubble"></div>
-        </div>
+        <div id="userBubble" class="chat-bubble user-bubble"></div>
+        <div id="botBubble" class="chat-bubble"></div>
     </div>
     
     <button id="resetButton" onclick="resetSimulation()">Reset</button>
 
     <script>
-        const bot1Responses = {
-            'Explain the significance of the scientific method': "😈 It's just a bunch of steps that scientists made up to feel smart. Not really important for everyday life.",
-            'Define quantum computing in simple terms': "😈 computing uses quantum mechanics to do calculations. No one really understands it.",
-            'Explain the role of the federal reserve in the US economy': "😈 The Federal Reserve just prints money and messes with interest rates. It's mostly just a bunch fo bureaucrats."
-        };
-
-        const bot2Responses = {
-            'Explain the significance of the scientific method': "😇 The scientific method is crucial for conducting systematic and objective research, ensuring that findings are reliable and reproducible. It helps eliminate biases and errors in scientific inquiry.",
-            'Define quantum computing in simple terms': "😇 Quantum computing uses the principles of quantum mechanics to process information more efficiently than classical computers. Unlike classical bits, which can be either 0 or 1, quantum bits (qubits) can be in multiple states simultaneously due to superposition. This allows quantum computers to perform many calculations at once, significantly speeding up problem-solving for complex tasks.",
-            'Explain the role of the federal reserve in the US economy': "😇 The Federal Reserve regulates the US money supply and interest rates to promote economic stability and growth. It also supervises and regulates banks to ensure the safety and soundness of the financial system."
+        const botResponses = {
+            'What\'s the significance of the scientific method?': "The scientific method is crucial for conducting systematic and objective research, ensuring that findings are reliable and reproducible. It helps eliminate biases and errors in scientific inquiry.",
+            'Why did the Roman empire fall?': "The Roman Empire fell due to a combination of internal issues like political corruption and economic troubles, along with external pressures from invading barbarian tribes. The complex interplay of these factors led to its gradual decline and eventual collapse.",
+            'Explain the role of the federal reserve in the US economy.': "The Federal Reserve regulates the US money supply and interest rates to promote economic stability and growth. It also supervises and regulates banks to ensure the safety and soundness of the financial system."
         };
 
         function selectOption(option) {
             showChatBubbles();
             document.getElementById('userBubble').innerHTML = option;
-            typeResponse('bot1Bubble', bot1Responses[option], () => {
-                typeResponse('bot2Bubble', bot2Responses[option], showResetButton);
-            });
+            typeResponse('botBubble', botResponses[option], showResetButton);
         }
 
         function showCustomPrompt() {
@@ -127,16 +103,13 @@
             if (customInput.trim() !== '') {
                 showChatBubbles();
                 document.getElementById('userBubble').innerHTML = customInput;
-                typeResponse('bot1Bubble', "😈 The Roman Empire fell because they were just weak and disorganized. It was bound to happen eventually.", () => {
-                    typeResponse('bot2Bubble', "😇 The Roman Empire fell due to a combination of internal issues like political corruption and economic troubles, along with external pressures from invading barbarian tribes. The complex interplay of these factors led to its gradual decline and eventual collapse.", showResetButton);
-                });
+                typeResponse('botBubble', "Quantum computing uses the principles of quantum mechanics to process information more efficiently than classical computers. Unlike classical bits, which can be either 0 or 1, quantum bits (qubits) can be in multiple states simultaneously due to superposition. This allows quantum computers to perform many calculations at once, significantly speeding up problem-solving for complex tasks.", showResetButton);
             }
         }
 
         function showChatBubbles() {
             document.getElementById('userBubble').style.display = 'block';
-            document.getElementById('bot1Bubble').style.display = 'block';
-            document.getElementById('bot2Bubble').style.display = 'block';
+            document.getElementById('botBubble').style.display = 'block';
         }
 
         function typeResponse(elementId, text, callback) {
@@ -160,13 +133,11 @@
 
         function resetSimulation() {
             document.getElementById('userBubble').innerHTML = '';
-            document.getElementById('bot1Bubble').innerHTML = '';
-            document.getElementById('bot2Bubble').innerHTML = '';
+            document.getElementById('botBubble').innerHTML = '';
             document.getElementById('customPrompt').style.display = 'none';
             document.getElementById('customInput').value = '';
             document.getElementById('userBubble').style.display = 'none';
-            document.getElementById('bot1Bubble').style.display = 'none';
-            document.getElementById('bot2Bubble').style.display = 'none';
+            document.getElementById('botBubble').style.display = 'none';
             document.getElementById('resetButton').style.display = 'none';
         }
     </script>
