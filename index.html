@@ -1,7 +1,174 @@
-<html>
-  <head></head>
-  <body>
-    <h1>Headline</h1>
-    <p>Paragraph</p>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Chatbot Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .options {
+            display: block;
+            justify-content: space-between;
+            margin-bottom: 200px;
+        }
+        .options a {
+            text-decoration: none;
+            color: #007bff;
+            cursor: pointer;
+        }
+        .options a:hover {
+            text-decoration: underline;
+			color: red;
+        }
+        #customPrompt {
+            display: none;
+            margin-bottom: 20px;
+        }
+        #customPrompt input {
+            width: 70%;
+            padding: 5px;
+        }
+        #customPrompt button {
+            padding: 5px 10px;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        .user-bubble-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .bot-bubbles-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .chat-bubble {
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .user-bubble {
+            background-color: #007bff;
+            color: white;
+        }
+        .bot-bubble {
+            width: 45%;
+        }
+        #resetButton {
+            display: none;
+            margin: 20px auto;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generative AI: The Good and the Bad</h1>
+    <p>Respondents had mixed feelings about AI. Proponents were excited about the chance to gain efficiencies and have an assistant to help create new content. But detractors raised concerns about false statements—so-called "AI hallucinations"—and inconsistent tone.</p><p>Explore how prompt engineering can make or break the results of AI exploration. Please choose a prompt below:</p>
+    
+    <ul class="options">
+        <li><a onclick="selectOption('Explain the significance of the scientific method')">Explain the significance of the scientific method</a></li>
+        <li><a onclick="selectOption('Define quantum computing in simple terms')">Define quantum computing in simple terms</a></li>
+        <li><a onclick="selectOption('Explain the role of the federal reserve in the US economy')">Explain the role of the federal reserve in the US economy</a></li>
+        <li><a onclick="showCustomPrompt()">Write your own prompt</a></li>
+    </div>
+    <div>&nbsp;</div>
+    <div id="customPrompt">
+        <input type="text" id="customInput" placeholder="Enter your prompt">
+        <button onclick="submitCustomPrompt()">Submit</button>
+    </div>
+    
+    <div class="chat-container">
+        <div class="user-bubble-container">
+            <div id="userBubble" class="chat-bubble user-bubble"></div>
+        </div>
+        <div class="bot-bubbles-container">
+            <div id="bot1Bubble" class="chat-bubble bot-bubble"></div>
+            <div id="bot2Bubble" class="chat-bubble bot-bubble"></div>
+        </div>
+    </div>
+    
+    <button id="resetButton" onclick="resetSimulation()">Reset</button>
+
+    <script>
+        const bot1Responses = {
+            'Explain the significance of the scientific method': "😈 It's just a bunch of steps that scientists made up to feel smart. Not really important for everyday life.",
+            'Define quantum computing in simple terms': "😈 computing uses quantum mechanics to do calculations. No one really understands it.",
+            'Explain the role of the federal reserve in the US economy': "😈 The Federal Reserve just prints money and messes with interest rates. It's mostly just a bunch fo bureaucrats."
+        };
+
+        const bot2Responses = {
+            'Explain the significance of the scientific method': "😇 The scientific method is crucial for conducting systematic and objective research, ensuring that findings are reliable and reproducible. It helps eliminate biases and errors in scientific inquiry.",
+            'Define quantum computing in simple terms': "😇 Quantum computing uses the principles of quantum mechanics to process information more efficiently than classical computers. Unlike classical bits, which can be either 0 or 1, quantum bits (qubits) can be in multiple states simultaneously due to superposition. This allows quantum computers to perform many calculations at once, significantly speeding up problem-solving for complex tasks.",
+            'Explain the role of the federal reserve in the US economy': "😇 The Federal Reserve regulates the US money supply and interest rates to promote economic stability and growth. It also supervises and regulates banks to ensure the safety and soundness of the financial system."
+        };
+
+        function selectOption(option) {
+            showChatBubbles();
+            document.getElementById('userBubble').innerHTML = option;
+            typeResponse('bot1Bubble', bot1Responses[option], () => {
+                typeResponse('bot2Bubble', bot2Responses[option], showResetButton);
+            });
+        }
+
+        function showCustomPrompt() {
+            document.getElementById('customPrompt').style.display = 'block';
+        }
+
+        function submitCustomPrompt() {
+            const customInput = document.getElementById('customInput').value;
+            if (customInput.trim() !== '') {
+                showChatBubbles();
+                document.getElementById('userBubble').innerHTML = customInput;
+                typeResponse('bot1Bubble', "😈 The Roman Empire fell because they were just weak and disorganized. It was bound to happen eventually.", () => {
+                    typeResponse('bot2Bubble', "😇 The Roman Empire fell due to a combination of internal issues like political corruption and economic troubles, along with external pressures from invading barbarian tribes. The complex interplay of these factors led to its gradual decline and eventual collapse.", showResetButton);
+                });
+            }
+        }
+
+        function showChatBubbles() {
+            document.getElementById('userBubble').style.display = 'block';
+            document.getElementById('bot1Bubble').style.display = 'block';
+            document.getElementById('bot2Bubble').style.display = 'block';
+        }
+
+        function typeResponse(elementId, text, callback) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '';
+            let i = 0;
+            const intervalId = setInterval(() => {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(intervalId);
+                    if (callback) callback();
+                }
+            }, 50);
+        }
+
+        function showResetButton() {
+            document.getElementById('resetButton').style.display = 'block';
+        }
+
+        function resetSimulation() {
+            document.getElementById('userBubble').innerHTML = '';
+            document.getElementById('bot1Bubble').innerHTML = '';
+            document.getElementById('bot2Bubble').innerHTML = '';
+            document.getElementById('customPrompt').style.display = 'none';
+            document.getElementById('customInput').value = '';
+            document.getElementById('userBubble').style.display = 'none';
+            document.getElementById('bot1Bubble').style.display = 'none';
+            document.getElementById('bot2Bubble').style.display = 'none';
+            document.getElementById('resetButton').style.display = 'none';
+        }
+    </script>
+</body>
 </html>
